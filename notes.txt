@@ -12,5 +12,11 @@
     2.4 Inner Text Locator (exact method)
     2.5 Alt Text Locator(image locator)
     2.6 Title Locator(page title)
-    2.7 CSS Locator (4 type sof CSS selector)
+    2.7 CSS selector (4 type sof CSS selector)
+    2.8 CSS selector Hierrarchy (parent > child)
+    2.9 Pseudo selectors
+    2.10 Xpath Locators
+    2.11 Xpath functions
+    2.12 Other locators
+    2.13 Xpath locators
         
