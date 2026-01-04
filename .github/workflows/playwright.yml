@@ -33,4 +33,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-report
-          path: playwright_tests/test-report/report.html
+          path: test-report/
