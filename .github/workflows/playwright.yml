@@ -27,4 +27,10 @@ jobs:
           playwright install
 
       - name: Run Playwright tests
-        run: pytest tests/
+        run: pytest tests
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pytest-report
+          path: playwright_tests/test-report/report.html
