@@ -6,22 +6,33 @@ on :
 jobs :
   test :
   runs-on: ubuntu-latest
-  steps :
-  -name : Checkout Repository
-   uses : actions/checkout@v2
+  name: Playwright Tests
 
-  -name : setup python
-    uses : actions/setup-python@v2
-    with :
-      python-version : '3.12'
-  -name : install Playwright
-    run : |
-      pip install pytest-playwright
-  -name : install Browsers
-    run : |
-      playwright install
-  -name : Install Reporting Tool
-    run : |
-      pip install pytest-html
-  -name : Run Playwright Tests
-    run : pytest tests/
+  on:
+    push:
+      branches:
+        - main
+
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.12'
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install pytest-playwright pytest-html
+
+        - name: Install Playwright browsers
+          run: |
+            playwright install
+
+        - name: Run Playwright tests
+          run: pytest tests/
