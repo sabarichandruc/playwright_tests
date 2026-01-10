@@ -1,0 +1,71 @@
+pipeline { 
+    agent any 
+     
+    environment { 
+        PYTHON_VERSION = '3.12' 
+    } 
+     
+    stages { 
+        stage('Checkout') { 
+            steps { 
+                checkout scm 
+            } 
+        } 
+         
+        stage('Setup Python Environment') { 
+            steps { 
+                sh ''' 
+                    python3 -m venv venv 
+                    . venv/bin/activate 
+                    pip install --upgrade pip 
+                    pip install -r requirements.txt 
+                ''' 
+            } 
+        } 
+         
+        stage('Install Playwright Browsers') { 
+            steps { 
+                sh ''' 
+                    . venv/bin/activate 
+                    playwright install chromium 
+                    playwright install-deps chromium 
+                ''' 
+            } 
+        } 
+         
+        stage('Run Tests') { 
+            steps { 
+                sh ''' 
+                    . venv/bin/activate 
+                    pytest tests/ 
+                ''' 
+            } 
+        } 
+    } 
+     
+    post { 
+        always { 
+            publishHTML([ 
+                allowMissing: false, 
+                alwaysLinkToLastBuild: true, 
+                keepAll: true, 
+                reportDir: 'test-report', 
+                reportFiles: 'report.html', 
+                reportName: 'Playwright Test Report' 
+            ]) 
+             
+            junit(allowEmptyResults: true, testResults: 
+'reports/junit.xml') 
+             
+            cleanWs() 
+        } 
+         
+        success { 
+            echo 'Tests passed successfully!' 
+        } 
+         
+        failure { 
+            echo 'Tests failed!' 
+        } 
+    } 
+}
