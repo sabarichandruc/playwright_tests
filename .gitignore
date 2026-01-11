@@ -1,2 +1,7 @@
 node_modules/
 play_env
+test-report/
+.env
+allure-results
+*.pyc
+__pycache__/
