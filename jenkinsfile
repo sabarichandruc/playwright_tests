@@ -12,7 +12,7 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: '*/main']],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/your-org/playwright_tests.git'
+                        url: 'https://github.com/sabarichandruc/playwright_tests.git'
                     ]]
                 ])
             } 
