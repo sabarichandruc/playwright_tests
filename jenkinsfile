@@ -8,17 +8,24 @@ pipeline {
     stages { 
         stage('Checkout') { 
             steps { 
-                checkout scm 
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/your-org/playwright_tests.git'
+                    ]]
+                ])
             } 
         } 
          
         stage('Setup Python Environment') { 
             steps { 
                 sh ''' 
+                    set -e
                     python3 -m venv venv 
                     . venv/bin/activate 
-                    pip install --upgrade pip 
-                    pip install -r requirements.txt 
+                    pip install --upgrade pip setuptools wheel
+                    pip install -r requirement.txt 
                 ''' 
             } 
         } 
@@ -46,7 +53,7 @@ pipeline {
     post { 
         always { 
             publishHTML([ 
-                allowMissing: false, 
+                allowMissing: true, 
                 alwaysLinkToLastBuild: true, 
                 keepAll: true, 
                 reportDir: 'test-report', 
@@ -54,9 +61,10 @@ pipeline {
                 reportName: 'Playwright Test Report' 
             ]) 
              
-            junit(allowEmptyResults: true, testResults: 
-'reports/junit.xml') 
-             
+            junit(allowEmptyResults: true, testResults: 'reports/**/*.xml') 
+            
+            archiveArtifacts(artifacts: 'screenshots/**/*.png,videos/**/*.mp4', allowEmptyArchive: true)
+            
             cleanWs() 
         } 
          
