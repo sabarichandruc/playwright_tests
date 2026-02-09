@@ -51,6 +51,23 @@ pipeline {
      
     post { 
         always { 
+            publishHTML([ 
+                allowMissing: true, 
+                alwaysLinkToLastBuild: true, 
+                keepAll: true, 
+                reportDir: 'test-report', 
+                reportFiles: 'report.html', 
+                reportName: 'HTML Test Report' 
+            ])
+            
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: 'allure-results']]
+            ])
+            
+            archiveArtifacts(artifacts: 'screenshots/**/*.png,videos/**/*.mp4', allowEmptyArchive: true)
+            
             bat 'rmdir /s /q venv'
             cleanWs() 
         }
